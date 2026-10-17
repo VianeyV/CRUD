@@ -1,12 +1,7 @@
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
+ * Estilo Gamer Neón Morado para Ionic
  */
 
 /* Core CSS required for Ionic components to work properly */
@@ -16,7 +11,6 @@
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "@ionic/angular/css/padding.css";
@@ -24,14 +18,103 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+@import "@ionic/angular/css/display.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+/* --- VARIABLES DE COLORES NEÓN Y GAMER --- */
+:root {
+  --ion-background-color: #0b0614; /* Fondo negro-morado muy oscuro */
+  --ion-background-color-rgb: 11, 6, 20;
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+  --ion-text-color: #f3e8ff;
+  --ion-text-color-rgb: 243, 232, 255;
+
+  --ion-color-primary: #a855f7;       /* Morado principal brillante */
+  --ion-color-primary-rgb: 168, 85, 247;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #9333ea;
+  --ion-color-primary-tint: #c084fc;
+
+  --ion-color-secondary: #ec4899;     /* Rosa neón de acento */
+  --ion-color-secondary-rgb: 236, 72, 153;
+
+  --ion-color-tertiary: #06b6d4;      /* Cian neón para contraste cibernético */
+  --ion-color-tertiary-rgb: 6, 182, 212;
+
+  --ion-item-background: #150f24;     /* Fondo de tarjetas y elementos */
+  --ion-toolbar-background: #100a1c;  /* Fondo de barras superiores */
+  --ion-tab-bar-background: #100a1c;
+}
+
+/* --- ESTILOS GLOBALES NEÓN --- */
+
+/* Barras de navegación con brillo morado sutil */
+ion-toolbar {
+  --border-color: #2e1065;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15);
+}
+
+/* ANIMACIÓN Y CAMBIO DE COLOR EN TÍTULOS SUPERIORES */
+@keyframes neonGlowText {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+ion-title {
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  /* Degradado fluido entre Morado, Rosa Neón y Cian Cibernético */
+  background: linear-gradient(90deg, #c084fc, #ec4899, #06b6d4, #c084fc);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: neonGlowText 6s ease infinite;
+  filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.4));
+}
+
+/* Tarjetas y elementos de listas con bordes neón */
+ion-card, ion-item {
+  --background: #150f24;
+  border-radius: 12px;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  transition: all 0.3s ease;
+}
+
+ion-card:hover, ion-item:hover {
+  border-color: #c084fc;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+}
+
+/* Botones con efecto brillante (glow) */
+ion-button {
+  --border-radius: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  --box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+}
+
+ion-button[color="danger"] {
+  --box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+}
+
+/* Campos de entrada (Inputs) estilo futurista */
+ion-input, ion-textarea {
+  --background: #1f1635;
+  --padding-start: 12px !important;
+  --padding-end: 12px !important;
+  border-radius: 8px;
+  border: 1px solid #3b2064;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+ion-input.has-focus, ion-textarea.has-focus {
+  border-color: #06b6d4; /* Cambia a cian neón al escribir */
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+}

@@ -1,0 +1,22 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Create Info</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="infoForm" (ngSubmit)="saveInfo()">
+    <ion-item>
+      <ion-input type="text" label="Info Title" labelPlacement="floating" formControlName="info_title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input type="text" label="Info Description" labelPlacement="floating" formControlName="info_description"></ion-input>
+    </ion-item>
+    <ion-button shape="round" color="primary" expand="block" [disabled]="!infoForm.valid" type="submit" class="ion-margin-top">
+      Save
+    </ion-button>
+  </form>
+</ion-content>

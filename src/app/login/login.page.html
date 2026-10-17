@@ -1,0 +1,128 @@
+<ion-content class="ion-padding login-background">
+  <div class="login-container">
+    <div class="login-header">
+      <div class="icon-circle">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+      </div>
+      <h2>Bienvenido</h2>
+      <p>Inicia sesión para continuar</p>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <ion-item class="custom-item" lines="none">
+        <ion-input type="email" label="Correo electrónico" labelPlacement="stacked" formControlName="username" placeholder="tucorreo@email.com"></ion-input>
+      </ion-item>
+
+      <ion-item class="custom-item" lines="none">
+        <ion-input type="password" label="Contraseña" labelPlacement="stacked" formControlName="password" placeholder="••••••••"></ion-input>
+      </ion-item>
+
+      <!-- Checkbox para recordar usuario -->
+      <div style="margin: 12px 0 5px 4px;">
+        <ion-checkbox formControlName="rememberMe" labelPlacement="end" color="secondary">Recordar usuario</ion-checkbox>
+      </div>
+
+      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+      <ion-button expand="block" type="submit" [disabled]="!loginForm.valid" class="glow-button ion-margin-top">
+        Ingresar
+      </ion-button>
+
+      <!-- Enlace para abrir la modal de recuperación -->
+      <div style="text-align: right; margin-top: 8px; margin-bottom: 5px;">
+        <span (click)="openForgotPasswordModal()" style="color: #a855f7; font-size: 13px; cursor: pointer; font-weight: 500;">
+          ¿Olvidaste tu contraseña?
+        </span>
+      </div>
+
+      <ion-button expand="block" fill="outline" type="button" (click)="openRegisterModal()" class="outline-glow-button ion-margin-top">
+        Crear Cuenta Nueva
+      </ion-button>
+    </form>
+  </div>
+
+  <!-- MODAL DE RECUPERAR CONTRASEÑA -->
+  <ion-modal [isOpen]="isForgotModalOpen" class="custom-modal" (didDismiss)="closeForgotModal()">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar class="modal-toolbar">
+          <ion-title>Recuperar Contraseña</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeForgotModal()" class="close-btn">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content class="ion-padding modal-content">
+        <div class="login-container modal-form-container">
+          <div class="login-header">
+            <div class="icon-circle register-icon">
+              <ion-icon name="mail-unread-outline"></ion-icon>
+            </div>
+            <h2>Restablecer Clave</h2>
+            <p>Ingresa tu correo y te enviaremos las instrucciones</p>
+          </div>
+
+          <form [formGroup]="forgotForm" (ngSubmit)="onResetPassword()">
+            <ion-item class="custom-item" lines="none">
+              <ion-input type="email" label="Correo electrónico" labelPlacement="stacked" formControlName="email" placeholder="tucorreo@email.com"></ion-input>
+            </ion-item>
+
+            <p *ngIf="forgotErrorMessage" class="error-message">{{ forgotErrorMessage }}</p>
+            <p *ngIf="forgotSuccessMessage" style="color: #4ade80; font-size: 13px; text-align: center; margin-top: 8px;">{{ forgotSuccessMessage }}</p>
+
+            <ion-button expand="block" type="submit" [disabled]="!forgotForm.valid" class="glow-button register-glow ion-margin-top">
+              Enviar Correo de Recuperación
+            </ion-button>
+          </form>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- MODAL DE REGISTRO ANIMADA -->
+  <ion-modal [isOpen]="isRegisterModalOpen" class="custom-modal" (didDismiss)="closeRegisterModal()">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar class="modal-toolbar">
+          <ion-title>Registro de Usuario</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeRegisterModal()" class="close-btn">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content class="ion-padding modal-content">
+        <div class="login-container modal-form-container">
+          <div class="login-header">
+            <div class="icon-circle register-icon">
+              <ion-icon name="person-add-outline"></ion-icon>
+            </div>
+            <h2>Crear Cuenta</h2>
+            <p>Regístrate para empezar a gestionar tu información</p>
+          </div>
+
+          <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+            <ion-item class="custom-item" lines="none">
+              <ion-input type="email" label="Correo electrónico" labelPlacement="stacked" formControlName="username" placeholder="tucorreo@email.com"></ion-input>
+            </ion-item>
+
+            <ion-item class="custom-item" lines="none">
+              <ion-input type="password" label="Contraseña" labelPlacement="stacked" formControlName="password" placeholder="Mínimo 6 caracteres"></ion-input>
+            </ion-item>
+
+            <p *ngIf="registerErrorMessage" class="error-message">{{ registerErrorMessage }}</p>
+
+            <ion-button expand="block" type="submit" [disabled]="!registerForm.valid" class="glow-button register-glow ion-margin-top">
+              Registrarme y Entrar
+            </ion-button>
+          </form>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
