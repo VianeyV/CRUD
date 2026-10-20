@@ -6,10 +6,16 @@
     </ion-title>
 
     <ion-buttons slot="end">
-          <ion-button *ngIf="userRole !== 'admin'" routerLink="/cart" class="cart-btn">
-      <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
-      <ion-badge *ngIf="(cartCount$ | async) as n" class="cart-badge">{{ n }}</ion-badge>
-    </ion-button>
+      <!-- Botón de cambio de moneda -->
+      <ion-button (click)="toggleCurrency()" class="currency-toggle-btn">
+        {{ currentCurrency === 'USD' ? '🇺🇸 USD' : '🇨🇴 COP' }}
+      </ion-button>
+
+      <ion-button *ngIf="userRole !== 'admin'" routerLink="/cart" class="cart-btn">
+        <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+        <ion-badge *ngIf="(cartCount$ | async) as n" class="cart-badge">{{ n }}</ion-badge>
+      </ion-button>
+
       <ion-button (click)="logout()" class="logout-btn">
         <ion-icon slot="start" name="log-out-outline"></ion-icon>
         Salir
@@ -17,7 +23,6 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 
 <ion-content class="home-content">
 
@@ -76,7 +81,7 @@
         <p class="desc">{{ item.info_description }}</p>
 
         <div class="product-footer">
-          <span class="price">${{ item.product_price || '0.00' }}</span>
+          <span class="price">${{ formatPrice(item.product_price) }} {{ currentCurrency }}</span>
 
           <!-- Usuario normal -->
           <button *ngIf="userRole !== 'admin'" class="add-btn"

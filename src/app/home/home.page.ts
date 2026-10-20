@@ -115,6 +115,23 @@ export class HomePage {
       return matchText && matchCat;
     });
   }
+  // Selector de moneda
+  currentCurrency: string = 'USD';
+  exchangeRate: number = 3200; // Tasa de cambio aproximada
+
+  toggleCurrency() {
+    this.currentCurrency = this.currentCurrency === 'USD' ? 'COP' : 'USD';
+  }
+
+  formatPrice(priceInUSD: number): string {
+    if (!priceInUSD) return '0.00';
+    if (this.currentCurrency === 'COP') {
+      const priceInCOP = priceInUSD * this.exchangeRate;
+      return priceInCOP.toLocaleString('es-CO');
+    } else {
+      return Number(priceInUSD).toFixed(2);
+    }
+  }
 
   onSearch(ev: Event) {
     this.searchTerm = (ev.target as HTMLInputElement).value;
