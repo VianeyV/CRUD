@@ -1,3 +1,4 @@
+
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -5,6 +6,7 @@ import { Database, ref, onValue, remove } from '@angular/fire/database';
 import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth';
 import { CartService } from '../services/cart';
+import { GalleryService } from '../services/gallery';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +18,7 @@ export class HomePage {
   infos: any[] = [];
   userRole: string = 'user';
 
-  // Buscador y categorías
+  // Buscador y categorias
   searchTerm = '';
   selectedCategory = 'Todos';
   categories = ['Todos', 'Labios', 'Ojos', 'Rostro', 'Uñas', 'Cuidado'];
@@ -34,7 +36,8 @@ export class HomePage {
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
     private cartService: CartService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private gallery: GalleryService
   ) {
     this.cartCount$ = this.cartService.count$;
   }
@@ -55,8 +58,10 @@ export class HomePage {
 
     this.unsubscribe = onValue(dbRef, (snapshot) => {
       const tempArray: any[] = [];
+
       snapshot.forEach((childSnapshot) => {
         const val = childSnapshot.val();
+
         tempArray.push({
           id: childSnapshot.key,
           info_title: val.info_title,
@@ -79,7 +84,9 @@ export class HomePage {
 
   async addToCart(item: any, ev: Event) {
     ev.stopPropagation();
+
     const ok = this.cartService.add(item);
+
     const toast = await this.toastCtrl.create({
       message: ok
         ? `${item.info_title} agregado al carrito 🛍️`
@@ -88,19 +95,23 @@ export class HomePage {
       position: 'bottom',
       color: ok ? 'primary' : 'warning'
     });
+
     await toast.present();
   }
 
   get filteredInfos() {
     const term = this.searchTerm.toLowerCase().trim();
+
     return this.infos.filter((i) => {
       const matchText =
         !term ||
         i.info_title?.toLowerCase().includes(term) ||
         i.info_description?.toLowerCase().includes(term);
+
       const matchCat =
         this.selectedCategory === 'Todos' ||
         i.product_category === this.selectedCategory;
+
       return matchText && matchCat;
     });
   }
@@ -138,6 +149,7 @@ export class HomePage {
         message: 'No tienes permisos de administrador para borrar registros.',
         buttons: ['OK']
       });
+
       await alert.present();
       return;
     }
@@ -151,6 +163,10 @@ export class HomePage {
           text: 'Sí, borrar',
           handler: () => {
             remove(ref(this.database, 'infos/' + id)).catch((error) => {
+              console.error(error);
+            });
+
+            this.gallery.clear(id).catch((error) => {
               console.error(error);
             });
           }

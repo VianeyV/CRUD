@@ -1,3 +1,4 @@
+
 <ion-header class="ion-no-border">
   <ion-toolbar class="create-toolbar">
     <ion-buttons slot="start">
@@ -15,25 +16,62 @@
       <p>Añade un nuevo cosmético al catálogo</p>
     </div>
 
-    <!-- Imagen -->
-    <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
+    <!-- Imágenes -->
+    <p class="section-label">
+      Imágenes ({{ images.length }}/{{ MAX_IMAGES }})
+    </p>
 
-    <div class="image-picker" (click)="fileInput.click()">
-      <img *ngIf="product_image" [src]="product_image" alt="Vista previa" />
+    <input
+      #fileInput
+      type="file"
+      accept="image/*"
+      multiple
+      hidden
+      (change)="onFilesSelected($event)"
+    />
 
-      <div *ngIf="!product_image" class="placeholder">
-        <span class="emoji">🖼️</span>
-        <span>Toca para elegir una imagen</span>
+    <div class="thumbs">
+      <div class="thumb" *ngFor="let img of images; let i = index">
+        <img [src]="img" [alt]="'Imagen ' + (i + 1)" />
+
+        <span class="cover-badge" *ngIf="i === 0">
+          Portada
+        </span>
+
+        <button
+          type="button"
+          class="thumb-btn remove"
+          (click)="removeImage(i)">
+          ×
+        </button>
+
+        <button
+          type="button"
+          class="thumb-btn cover"
+          *ngIf="i > 0"
+          (click)="makeCover(i)">
+          ★
+        </button>
       </div>
+
+      <button
+        type="button"
+        class="add-thumb"
+        *ngIf="images.length < MAX_IMAGES"
+        (click)="fileInput.click()">
+
+        <span class="plus">+</span>
+        <span>Añadir</span>
+      </button>
     </div>
 
-    <p *ngIf="uploading" class="uploading">Procesando imagen...</p>
+    <p class="hint">
+      La primera imagen es la portada. Toca ★ para hacer portada otra imagen.
+    </p>
 
-    <div class="change-image" *ngIf="product_image">
-      <ion-button fill="clear" size="small" (click)="fileInput.click()">
-        Cambiar imagen
-      </ion-button>
-    </div>
+    <p *ngIf="uploading" class="uploading">
+      Procesando imágenes...
+    </p>
 
     <!-- Datos -->
     <ion-input
@@ -67,17 +105,21 @@
       [(ngModel)]="product_stock">
     </ion-input>
 
+    <!-- Categoría -->
     <p class="section-label">Categoría</p>
+
     <div class="chips">
-      <button *ngFor="let c of categories"
-              type="button"
-              class="chip"
-              [class.active]="product_category === c"
-              (click)="selectCategory(c)">
+      <button
+        *ngFor="let c of categories"
+        type="button"
+        class="chip"
+        [class.active]="product_category === c"
+        (click)="selectCategory(c)">
         {{ c }}
       </button>
     </div>
 
+    <!-- Descripción -->
     <ion-textarea
       class="field"
       fill="outline"
@@ -88,9 +130,14 @@
       [(ngModel)]="info_description">
     </ion-textarea>
 
-    <ion-button class="submit-btn" expand="block" shape="round"
-                [disabled]="saving || uploading"
-                (click)="createProduct()">
+    <!-- Publicar -->
+    <ion-button
+      class="submit-btn"
+      expand="block"
+      shape="round"
+      [disabled]="saving || uploading"
+      (click)="createProduct()">
+
       {{ saving ? 'Guardando...' : 'Publicar producto' }}
     </ion-button>
 

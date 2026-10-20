@@ -1,63 +1,100 @@
-<ion-header [translucent]="true">
-  <ion-toolbar style="--background: #0f0a1a;">
+<ion-header class="ion-no-border">
+  <ion-toolbar class="edit-toolbar">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" color="light"></ion-back-button>
+      <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title style="color: #f3e8ff;">✨ Editar Producto</ion-title>
+    <ion-title class="edit-title">Editar producto</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" style="--background: #0f0a1a;">
-  
-  <div style="text-align: center; margin: 20px 0;">
-    <h2 style="color: #d8b4fe; font-weight: bold;">Modificar Catálogo</h2>
-    <p style="color: #94a3b8; font-size: 14px;">Actualiza la información del artículo</p>
+<ion-content class="edit-content">
+
+  <p *ngIf="!loaded" class="loading">Cargando producto...</p>
+
+  <div class="form" *ngIf="loaded">
+
+    <div class="form-head">
+      <h2>Modificar artículo</h2>
+      <p>Actualiza la información y las imágenes</p>
+    </div>
+
+    <!-- Imágenes -->
+    <p class="section-label">Imágenes ({{ images.length }}/{{ MAX_IMAGES }})</p>
+
+    <input #fileInput type="file" accept="image/*" multiple hidden (change)="onFilesSelected($event)" />
+
+    <div class="thumbs">
+      <div class="thumb" *ngFor="let img of images; let i = index">
+        <img [src]="img" [alt]="'Imagen ' + (i + 1)" />
+        <span class="cover-badge" *ngIf="i === 0">Portada</span>
+        <button type="button" class="thumb-btn remove" (click)="removeImage(i)">×</button>
+        <button type="button" class="thumb-btn cover" *ngIf="i > 0" (click)="makeCover(i)">★</button>
+      </div>
+
+      <button type="button" class="add-thumb" *ngIf="images.length < MAX_IMAGES" (click)="fileInput.click()">
+        <span class="plus">+</span>
+        <span>Añadir</span>
+      </button>
+    </div>
+
+    <p class="hint">La primera imagen es la portada. Toca ★ para hacer portada otra imagen.</p>
+    <p *ngIf="uploading" class="uploading">Procesando imágenes...</p>
+
+    <!-- Datos -->
+    <ion-input
+      class="field"
+      fill="outline"
+      label="Nombre del producto"
+      labelPlacement="stacked"
+      [(ngModel)]="info_title">
+    </ion-input>
+
+    <ion-input
+      class="field"
+      fill="outline"
+      type="number"
+      inputmode="decimal"
+      label="Precio (USD)"
+      labelPlacement="stacked"
+      [(ngModel)]="product_price">
+    </ion-input>
+
+    <ion-input
+      class="field"
+      fill="outline"
+      type="number"
+      inputmode="numeric"
+      label="Stock disponible"
+      labelPlacement="stacked"
+      placeholder="Vacío = sin límite"
+      [(ngModel)]="product_stock">
+    </ion-input>
+
+    <p class="section-label">Categoría</p>
+    <div class="chips">
+      <button *ngFor="let c of categories"
+              type="button"
+              class="chip"
+              [class.active]="product_category === c"
+              (click)="selectCategory(c)">
+        {{ c }}
+      </button>
+    </div>
+
+    <ion-textarea
+      class="field"
+      fill="outline"
+      label="Descripción"
+      labelPlacement="stacked"
+      rows="3"
+      [(ngModel)]="info_description">
+    </ion-textarea>
+
+    <ion-button class="submit-btn" expand="block" shape="round"
+                [disabled]="saving || uploading"
+                (click)="updateProduct()">
+      {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+    </ion-button>
+
   </div>
-
-  <ion-list lines="none" style="background: transparent;">
-    
-    <ion-item style="--background: rgba(30, 27, 75, 0.6); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 12px; margin-bottom: 16px;">
-      <ion-input 
-        label="Nombre del Producto" 
-        labelPlacement="stacked" 
-        [(ngModel)]="info_title"
-        style="color: #fff;">
-      </ion-input>
-    </ion-item>
-
-    <ion-item style="--background: rgba(30, 27, 75, 0.6); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 12px; margin-bottom: 16px;">
-      <ion-input 
-        type="number" 
-        label="Precio ($ USD)" 
-        labelPlacement="stacked" 
-        [(ngModel)]="product_price"
-        style="color: #fff;">
-      </ion-input>
-    </ion-item>
-
-    <ion-item style="--background: rgba(30, 27, 75, 0.6); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 12px; margin-bottom: 16px;">
-      <ion-input 
-        label="URL de la Imagen" 
-        labelPlacement="stacked" 
-        [(ngModel)]="product_image"
-        style="color: #fff;">
-      </ion-input>
-    </ion-item>
-
-    <ion-item style="--background: rgba(30, 27, 75, 0.6); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 12px; margin-bottom: 24px;">
-      <ion-textarea 
-        label="Descripción" 
-        labelPlacement="stacked" 
-        [(ngModel)]="info_description"
-        rows="3"
-        style="color: #fff;">
-      </ion-textarea>
-    </ion-item>
-
-  </ion-list>
-
-  <ion-button expand="block" (click)="updateProduct()" style="--background: #a855f7; --color: #fff; font-weight: bold; height: 48px; border-radius: 12px;">
-    Guardar Cambios
-  </ion-button>
-
 </ion-content>
