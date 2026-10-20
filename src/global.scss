@@ -1,7 +1,7 @@
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
- * Estilo Gamer Neón Morado para Ionic
+ * Tema CyberBeauty: rosa suave, crema y dorado
  */
 
 /* Core CSS required for Ionic components to work properly */
@@ -12,7 +12,7 @@
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 
-/* Optional CSS utils that can be commented out */
+/* Optional CSS utils */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
@@ -20,101 +20,73 @@
 @import "@ionic/angular/css/flex-utils.css";
 @import "@ionic/angular/css/display.css";
 
-/* --- VARIABLES DE COLORES NEÓN Y GAMER --- */
+/* --- VARIABLES DEL TEMA --- */
 :root {
-  --ion-background-color: #0b0614; /* Fondo negro-morado muy oscuro */
-  --ion-background-color-rgb: 11, 6, 20;
+  color-scheme: light;
 
-  --ion-text-color: #f3e8ff;
-  --ion-text-color-rgb: 243, 232, 255;
+  /* Colores de CyberBeauty */
+  --cb-bg: #fff8f6;
+  --cb-surface: #ffffff;
+  --cb-rose: #e8909f;
+  --cb-rose-deep: #c9506b;
+  --cb-rose-soft: #fde7ea;
+  --cb-gold: #b98a6a;
+  --cb-text: #3a2a30;
+  --cb-muted: #8c7a80;
+  --cb-radius: 20px;
+  --cb-shadow: 0 8px 24px rgba(201, 80, 107, 0.12);
 
-  --ion-color-primary: #a855f7;       /* Morado principal brillante */
-  --ion-color-primary-rgb: 168, 85, 247;
+  /* Ionic en modo claro */
+  --ion-font-family: 'Poppins', sans-serif;
+
+  --ion-background-color: #fff8f6;
+  --ion-background-color-rgb: 255, 248, 246;
+
+  --ion-text-color: #3a2a30;
+  --ion-text-color-rgb: 58, 42, 48;
+
+  --ion-color-primary: #c9506b;
+  --ion-color-primary-rgb: 201, 80, 107;
   --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-shade: #9333ea;
-  --ion-color-primary-tint: #c084fc;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #b14760;
+  --ion-color-primary-tint: #ce6179;
 
-  --ion-color-secondary: #ec4899;     /* Rosa neón de acento */
-  --ion-color-secondary-rgb: 236, 72, 153;
+  --ion-color-secondary: #e8909f;
+  --ion-color-secondary-rgb: 232, 144, 159;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #cc7f8c;
+  --ion-color-secondary-tint: #ea9ba9;
 
-  --ion-color-tertiary: #06b6d4;      /* Cian neón para contraste cibernético */
-  --ion-color-tertiary-rgb: 6, 182, 212;
+  --ion-color-tertiary: #b98a6a;
+  --ion-color-tertiary-rgb: 185, 138, 106;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #a37959;
+  --ion-color-tertiary-tint: #c09575;
 
-  --ion-item-background: #150f24;     /* Fondo de tarjetas y elementos */
-  --ion-toolbar-background: #100a1c;  /* Fondo de barras superiores */
-  --ion-tab-bar-background: #100a1c;
+  --ion-item-background: #ffffff;
+  --ion-toolbar-background: #fff8f6;
+  --ion-tab-bar-background: #ffffff;
 }
 
-/* --- ESTILOS GLOBALES NEÓN --- */
+/* --- ESTILOS GLOBALES --- */
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+}
 
-/* Barras de navegación con brillo morado sutil */
 ion-toolbar {
-  --border-color: #2e1065;
-  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15);
-}
-
-/* ANIMACIÓN Y CAMBIO DE COLOR EN TÍTULOS SUPERIORES */
-@keyframes neonGlowText {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  --border-width: 0;
 }
 
 ion-title {
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  /* Degradado fluido entre Morado, Rosa Neón y Cian Cibernético */
-  background: linear-gradient(90deg, #c084fc, #ec4899, #06b6d4, #c084fc);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: neonGlowText 6s ease infinite;
-  filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.4));
+  font-weight: 600;
 }
 
-/* Tarjetas y elementos de listas con bordes neón */
-ion-card, ion-item {
-  --background: #150f24;
-  border-radius: 12px;
-  border: 1px solid rgba(168, 85, 247, 0.25);
-  transition: all 0.3s ease;
-}
-
-ion-card:hover, ion-item:hover {
-  border-color: #c084fc;
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
-}
-
-/* Botones con efecto brillante (glow) */
 ion-button {
-  --border-radius: 10px;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  --box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
-}
-
-ion-button[color="danger"] {
-  --box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
-}
-
-/* Campos de entrada (Inputs) estilo futurista */
-ion-input, ion-textarea {
-  --background: #1f1635;
-  --padding-start: 12px !important;
-  --padding-end: 12px !important;
-  border-radius: 8px;
-  border: 1px solid #3b2064;
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-ion-input.has-focus, ion-textarea.has-focus {
-  border-color: #06b6d4; /* Cambia a cian neón al escribir */
-  box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+  --border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: none;
 }

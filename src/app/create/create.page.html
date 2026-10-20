@@ -1,22 +1,98 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="create-toolbar">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>Create Info</ion-title>
+    <ion-title class="create-title">Nuevo producto</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <form [formGroup]="infoForm" (ngSubmit)="saveInfo()">
-    <ion-item>
-      <ion-input type="text" label="Info Title" labelPlacement="floating" formControlName="info_title"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input type="text" label="Info Description" labelPlacement="floating" formControlName="info_description"></ion-input>
-    </ion-item>
-    <ion-button shape="round" color="primary" expand="block" [disabled]="!infoForm.valid" type="submit" class="ion-margin-top">
-      Save
+<ion-content class="create-content">
+  <div class="form">
+
+    <div class="form-head">
+      <h2>Registrar artículo</h2>
+      <p>Añade un nuevo cosmético al catálogo</p>
+    </div>
+
+    <!-- Imagen -->
+    <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
+
+    <div class="image-picker" (click)="fileInput.click()">
+      <img *ngIf="product_image" [src]="product_image" alt="Vista previa" />
+
+      <div *ngIf="!product_image" class="placeholder">
+        <span class="emoji">🖼️</span>
+        <span>Toca para elegir una imagen</span>
+      </div>
+    </div>
+
+    <p *ngIf="uploading" class="uploading">Procesando imagen...</p>
+
+    <div class="change-image" *ngIf="product_image">
+      <ion-button fill="clear" size="small" (click)="fileInput.click()">
+        Cambiar imagen
+      </ion-button>
+    </div>
+
+    <!-- Datos -->
+    <ion-input
+      class="field"
+      fill="outline"
+      label="Nombre del producto"
+      labelPlacement="stacked"
+      placeholder="Ej. Paleta de sombras"
+      [(ngModel)]="info_title">
+    </ion-input>
+
+    <ion-input
+      class="field"
+      fill="outline"
+      type="number"
+      inputmode="decimal"
+      label="Precio (USD)"
+      labelPlacement="stacked"
+      placeholder="Ej. 29.99"
+      [(ngModel)]="product_price">
+    </ion-input>
+
+    <ion-input
+      class="field"
+      fill="outline"
+      type="number"
+      inputmode="numeric"
+      label="Stock disponible"
+      labelPlacement="stacked"
+      placeholder="Vacío = sin límite"
+      [(ngModel)]="product_stock">
+    </ion-input>
+
+    <p class="section-label">Categoría</p>
+    <div class="chips">
+      <button *ngFor="let c of categories"
+              type="button"
+              class="chip"
+              [class.active]="product_category === c"
+              (click)="selectCategory(c)">
+        {{ c }}
+      </button>
+    </div>
+
+    <ion-textarea
+      class="field"
+      fill="outline"
+      label="Descripción"
+      labelPlacement="stacked"
+      placeholder="Detalles, tonos o beneficios..."
+      rows="3"
+      [(ngModel)]="info_description">
+    </ion-textarea>
+
+    <ion-button class="submit-btn" expand="block" shape="round"
+                [disabled]="saving || uploading"
+                (click)="createProduct()">
+      {{ saving ? 'Guardando...' : 'Publicar producto' }}
     </ion-button>
-  </form>
+
+  </div>
 </ion-content>

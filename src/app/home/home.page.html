@@ -1,14 +1,16 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Info List 
-      <span *ngIf="userRole === 'admin'" style="color: #f43f5e; font-size: 12px; font-weight: bold; border: 1px solid #f43f5e; padding: 2px 6px; border-radius: 6px; margin-left: 8px;">
-        ADMIN
-      </span>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="home-toolbar">
+    <ion-title class="brand">
+      Cyber<span>Beauty</span>
+      <small *ngIf="userRole === 'admin'" class="admin-badge">ADMIN</small>
     </ion-title>
-    
+
     <ion-buttons slot="end">
-      <ion-button color="danger" fill="outline" size="small" (click)="logout()" style="margin-right: 10px;">
+          <ion-button *ngIf="userRole !== 'admin'" routerLink="/cart" class="cart-btn">
+      <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+      <ion-badge *ngIf="(cartCount$ | async) as n" class="cart-badge">{{ n }}</ion-badge>
+    </ion-button>
+      <ion-button (click)="logout()" class="logout-btn">
         <ion-icon slot="start" name="log-out-outline"></ion-icon>
         Salir
       </ion-button>
@@ -16,32 +18,90 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <div *ngIf="userRole === 'admin'" style="background: rgba(244, 63, 94, 0.1); border: 1px solid #f43f5e; padding: 10px; border-radius: 8px; margin-bottom: 15px; color: #fda4af; font-size: 13px;">
-    🔑 Panel de Control Activo: Tienes permisos completos de administración sobre los registros.
+
+<ion-content class="home-content">
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-eyebrow">
+      <ion-icon name="sparkles-outline"></ion-icon> Nueva colección
+    </p>
+    <h1>Realza tu belleza natural</h1>
+    <p class="hero-sub">Descubre maquillaje que se adapta a tu estilo.</p>
+
+    <div class="search-box">
+      <ion-icon name="search-outline"></ion-icon>
+      <input type="text" placeholder="Buscar productos..." (input)="onSearch($event)" />
+    </div>
+  </section>
+
+  <!-- Banner admin -->
+  <div *ngIf="userRole === 'admin'" class="admin-banner">
+    ✨ Modo administrador: puedes crear, editar y eliminar productos.
   </div>
 
-  <ion-list>
-    <ion-item *ngFor="let item of infos">
-      <ion-label>
-        <h2>{{ item.info_title }}</h2>
-        <p>{{ item.info_description }}</p>
-      </ion-label>
-      
-      <!-- Solo el administrador ve Editar y Borrar -->
-      <ion-button *ngIf="userRole === 'admin'" slot="end" color="primary" (click)="edit(item.id)">
-        Editar
-      </ion-button>
-      
-      <ion-button *ngIf="userRole === 'admin'" slot="end" color="danger" (click)="delete(item.id)">
-        Borrar
-      </ion-button>
-    </ion-item>
-  </ion-list>
+  <!-- Categorías -->
+  <div class="chips">
+    <button *ngFor="let c of categories"
+            class="chip"
+            [class.active]="selectedCategory === c"
+            (click)="selectCategory(c)">
+      {{ c }}
+    </button>
+  </div>
 
-  <!-- El botón flotante de crear aparece para todos (admins y usuarios comunes) -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button routerLink="/create">
+  <!-- Productos -->
+  <h2 class="section-title">Nuestros productos</h2>
+
+  <div class="empty" *ngIf="filteredInfos.length === 0">
+    No encontramos productos 💄
+  </div>
+
+  <div class="products-grid">
+    <article class="product-card" *ngFor="let item of filteredInfos" (click)="goToDetail(item.id)">
+
+      <div class="product-img">
+        <span class="badge sold-out" *ngIf="isSoldOut(item)">Agotado</span>
+        <img [src]="item.product_image || fallbackImg"
+             [alt]="item.info_title"
+             (error)="onImgError($event)" />
+        <span class="badge" *ngIf="item.product_category">{{ item.product_category }}</span>
+        <button class="fav" (click)="$event.stopPropagation()">
+          <ion-icon name="heart-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="product-body">
+        <h3>{{ item.info_title }}</h3>
+        <p class="desc">{{ item.info_description }}</p>
+
+        <div class="product-footer">
+          <span class="price">${{ item.product_price || '0.00' }}</span>
+
+          <!-- Usuario normal -->
+          <button *ngIf="userRole !== 'admin'" class="add-btn"
+            [disabled]="isSoldOut(item)"
+            (click)="addToCart(item, $event)">
+           <ion-icon name="bag-add-outline"></ion-icon>
+          </button>
+
+          <!-- Admin -->
+          <div *ngIf="userRole === 'admin'" class="admin-actions" (click)="$event.stopPropagation()">
+            <button class="icon-btn" (click)="edit(item.id)">
+              <ion-icon name="create-outline"></ion-icon>
+            </button>
+            <button class="icon-btn danger" (click)="delete(item.id)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- FAB solo para admin -->
+  <ion-fab *ngIf="userRole === 'admin'" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button routerLink="/create" class="fab-btn">
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>

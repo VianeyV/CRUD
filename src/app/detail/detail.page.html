@@ -1,18 +1,65 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar class="detail-toolbar">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-button (click)="goBack()" class="back-btn">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
-    <ion-title>Información detallada</ion-title>
+    <ion-title class="toolbar-title">Detalle del Producto</ion-title>
+
+    <ion-buttons slot="end" *ngIf="product && userRole === 'admin'">
+      <ion-button (click)="editProduct(product.id)" class="edit-btn">
+        <ion-icon name="create-outline" slot="start"></ion-icon>
+        Editar
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-card>
-    <ion-card-content>
-      <ion-card-title>{{info.info_title}}</ion-card-title>
+<ion-content class="ion-padding detail-content">
+  <div *ngIf="!product" class="spinner-container">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
 
-      <p>{{info.info_description}}</p>
-    </ion-card-content>
-  </ion-card>
+  <div *ngIf="product" class="detail-container">
+
+    <div class="image-wrapper">
+      <img [src]="product.product_image || 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop'"
+           [alt]="product.info_title"
+           onerror="this.src='https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop'">
+      <div class="image-overlay"></div>
+    </div>
+
+    <div class="info-card">
+      <h1 class="product-title">{{ product.info_title }}</h1>
+
+      <div class="price-tag">$ {{ product.product_price || '0.00' }} <span class="currency">USD</span></div>
+
+      <div class="description-block">
+        <h3 class="description-title">Descripción</h3>
+        <p class="product-description">{{ product.info_description || 'No hay descripción disponible para este artículo.' }}</p>
+      </div>
+
+      <div class="extra-details">
+        <ion-chip outline [color]="isSoldOut ? 'danger' : 'tertiary'">
+          <ion-icon name="cube-outline"></ion-icon>
+          <ion-label>{{ isSoldOut ? 'Agotado' : 'Disponible' }}</ion-label>
+        </ion-chip>
+        <ion-chip outline color="success">
+          <ion-icon name="sparkles-outline"></ion-icon>
+          <ion-label>Cruelty Free</ion-label>
+        </ion-chip>
+      </div>
+
+    </div>
+  </div>
 </ion-content>
+
+<ion-footer *ngIf="product && userRole !== 'admin'" class="ion-no-border">
+  <ion-toolbar>
+    <ion-button expand="block" shape="round" [disabled]="isSoldOut" (click)="addToCart()">
+      <ion-icon slot="start" name="bag-add-outline"></ion-icon>
+      {{ isSoldOut ? 'Agotado' : 'Agregar al carrito' }}
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

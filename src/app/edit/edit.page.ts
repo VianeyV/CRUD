@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, Validators } from '@angular/forms';
-import { DataSnapshot, Database, ref, onValue, set } from "@angular/fire/database";
+import { Database, ref, get, update } from '@angular/fire/database';
 
 @Component({
   selector: 'app-edit',
@@ -10,53 +9,58 @@ import { DataSnapshot, Database, ref, onValue, set } from "@angular/fire/databas
   standalone: false,
 })
 export class EditPage implements OnInit {
-  info: any;
-  
-  infoForm = this.formBuilder.group({
-    info_title: [null, Validators.required],
-    info_description: [null, Validators.required]
-  });
+  productId: string = '';
+  info_title: string = '';
+  info_description: string = '';
+  product_price: number | null = null;
+  product_image: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder,
-    private database: Database // <--- Inyección segura de Firebase Database
+    private database: Database
   ) {}
 
   ngOnInit() {
-    this.getInfo();
+    this.productId = this.route.snapshot.paramMap.get('id') || '';
+    if (this.productId) {
+      this.loadProductData(this.productId);
+    }
   }
 
-  getInfo() {
-    const id = this.route.snapshot.paramMap.get('id');
-    const infoRef = ref(this.database, 'infos/' + id);
-
-    onValue(infoRef, (snapshot) => {
+  loadProductData(id: string) {
+    const productRef = ref(this.database, 'infos/' + id);
+    get(productRef).then((snapshot) => {
       if (snapshot.exists()) {
-        this.info = snapshotToObject(snapshot);
-        this.infoForm.controls['info_title'].setValue(this.info.info_title);
-        this.infoForm.controls['info_description'].setValue(this.info.info_description);
+        const data = snapshot.val();
+        this.info_title = data.info_title;
+        this.info_description = data.info_description;
+        this.product_price = data.product_price || null;
+        this.product_image = data.product_image || '';
       }
-    }, { onlyOnce: true }); // Usamos onlyOnce para evitar bucles de lectura innecesarios
+    }).catch((error) => {
+      console.error('Error al cargar el producto:', error);
+    });
   }
 
-  updateInfo() {
-    const id = this.route.snapshot.paramMap.get('id');
-    set(ref(this.database, 'infos/' + id), this.infoForm.value)
-      .then(() => {
-        // Redirigimos directamente a /home para que la lista se refleje al instante
-        this.router.navigate(['/home']);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-}
+  updateProduct() {
+    if (!this.info_title.trim() || !this.product_price) {
+      alert('Por favor, completa el nombre y el precio.');
+      return;
+    }
 
-// clase para convertir la respuesta de la base de datos en tiempo real de Firebase en un objeto Angular.
-export const snapshotToObject = (snapshot: DataSnapshot) => {
-  let item = snapshot.val() as any;
-  item.key = snapshot.key;
-  return item;
+    const productRef = ref(this.database, 'infos/' + this.productId);
+    update(productRef, {
+      info_title: this.info_title,
+      info_description: this.info_description,
+      product_price: this.product_price,
+      product_image: this.product_image
+    })
+    .then(() => {
+      this.router.navigate(['/home']);
+    })
+    .catch((error) => {
+      console.error('Error al actualizar:', error);
+    });
+  }
 }

@@ -1,0 +1,60 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="cart-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="cart-title">Mi carrito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="cart-content">
+  <ng-container *ngIf="cart$ | async as items">
+
+    <div class="cart-empty" *ngIf="items.length === 0">
+      <ion-icon name="bag-handle-outline"></ion-icon>
+      <h2>Tu carrito está vacío</h2>
+      <p>Agrega tus productos favoritos 💄</p>
+      <button class="primary-btn" routerLink="/home">Ir a la tienda</button>
+    </div>
+
+    <div class="cart-list" *ngIf="items.length > 0">
+      <div class="cart-item" *ngFor="let item of items">
+        <img [src]="item.image" [alt]="item.title" />
+
+        <div class="info">
+          <h3>{{ item.title }}</h3>
+          <span class="unit">${{ item.price | number:'1.2-2' }}</span>
+          <div class="qty">
+            <button (click)="change(item, -1)">
+              <ion-icon name="remove-outline"></ion-icon>
+            </button>
+            <span>{{ item.qty }}</span>
+            <button (click)="change(item, 1)">
+              <ion-icon name="add-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="right">
+          <strong>${{ item.price * item.qty | number:'1.2-2' }}</strong>
+          <button class="remove" (click)="remove(item.id)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ion-content>
+
+<ion-footer class="ion-no-border" *ngIf="(cart$ | async)?.length">
+  <div class="summary">
+    <div class="row">
+      <span>Total</span>
+      <strong>${{ total$ | async | number:'1.2-2' }}</strong>
+    </div>
+    <button class="primary-btn" [disabled]="processing" (click)="checkout()">
+      {{ processing ? 'Procesando...' : 'Finalizar compra' }}
+    </button>
+    <p class="note">El pago en línea estará disponible próximamente.</p>
+  </div>
+</ion-footer>
